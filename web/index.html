@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EasyPackage · 轻松打包</title><link rel="icon" href="/icon.svg" type="image/svg+xml"><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
+<body>
+<aside class="sidebar">
+ <a class="brand" href="#" aria-label="EasyPackage 首页"><span class="brand-icon">ep<span>↗</span></span><strong>EasyPackage<small>把项目，轻松带走。</small></strong></a>
+ <div class="workspace-label">你的本地工作台</div>
+ <button class="nav active" id="nav-pack" aria-controls="pack-page" aria-current="page"><span>▣</span> 项目打包 <b>01</b></button>
+ <button class="nav" id="nav-restore" aria-controls="restore-page"><span>↺</span> JPG / ZIP 还原 <b>02</b></button>
+ <div class="sidebar-note"><span class="note-dot"></span> 完全在本机运行<p>文件不上传，无需联网。<br>让分享更轻，让工作更简单。</p></div>
+ <div class="sidebar-bottom"><span class="go-badge">GO</span> Windows 桌面版 · v1.0.0 <button id="quit" title="关闭 EasyPackage 程序">退出 ↗</button></div>
+</aside>
+<main>
+ <header><div class="breadcrumb">工作台 <span>/</span> <b id="page-name">项目打包</b></div><div class="local-badge"><i></i> 本地连接</div></header>
+ <div id="page-scroll" class="page-scroll">
+ <section id="pack-page" class="page-layout" aria-label="项目打包">
+ <div class="page-main-column"><section class="hero"><div><div class="eyebrow">LESS FRICTION. MORE CREATION.</div><h1>好项目，<span>随手打包。</span></h1><p>从项目文件夹到一份整洁的压缩包，只需几步。</p></div></section>
+ <div class="form-column">
+ <fieldset id="controls">
+  <section class="card"><div class="card-heading"><span class="step">01</span><div><h2>选择项目</h2><p>保留目录结构，让每个文件各就其位。</p></div><span class="tiny-tag">SOURCE</span></div>
+   <label for="source">项目文件夹</label><div class="input-row"><div class="input-shell"><span>▱</span><input id="source" placeholder="输入项目路径，或点击浏览选择" autocomplete="off" spellcheck="false"></div><button id="choose-source" class="button secondary">浏览文件夹</button></div>
+   <div class="field-hint">支持任意项目类型；只读取源文件，不修改或删除。</div>
+  </section>
+  <section class="card"><div class="card-heading"><span class="step">02</span><div><h2>按需精简</h2><p>带上需要的内容，留下不必要的体积。</p></div><span class="tiny-tag">FILTERS</span></div>
+   <label class="option"><span class="option-icon">{ }</span><span class="option-copy"><strong>过滤 .class 编译文件</strong><small>默认开启，保留源码，排除 Java 编译产物</small></span><input id="filter-class" type="checkbox" class="switch" checked></label>
+   <div class="divider"></div>
+   <label class="option"><span class="option-icon">↧</span><span class="option-copy"><strong>过滤大文件</strong><small>超过指定大小的文件将不被打包</small></span><input id="filter-large" type="checkbox" class="switch"></label>
+   <div id="size-settings" class="size-settings" hidden><label for="size">大小上限</label><input id="size" type="number" min="0.000001" step="any" value="100"><select id="unit" aria-label="大小单位"><option value="1048576">MB</option><option value="1073741824">GB</option><option value="1024">KB</option></select><span>等于上限的文件仍会保留</span></div>
+   <div class="excluded-note">自动排除目录及全部内部文件：<code>.git</code> <code>.idea</code> <code>.codegraph</code> <code>.vscode</code> <code>.vs</code> <code>.svn</code> <code>.hg</code> <code>.fleet</code></div>
+  </section>
+  <section class="card"><div class="card-heading"><span class="step">03</span><div><h2>保存与封装</h2><p>标准 ZIP，或一张装着项目的 JPG。</p></div><span class="tiny-tag">OUTPUT</span></div>
+   <label for="directory">保存目录</label><div class="input-row"><div class="input-shell"><span>▱</span><input id="directory" placeholder="选择压缩包保存位置" spellcheck="false"></div><button id="choose-directory" class="button secondary">选择目录</button></div>
+   <label for="filename" class="spaced-label">文件名称</label><div class="input-shell"><input id="filename" value="project" placeholder="输入文件名" spellcheck="false"><span id="extension" class="extension">.zip</span></div>
+   <div class="divider"></div>
+   <label class="option"><span class="option-icon picture-icon">▧</span><span class="option-copy"><strong>附加 JPG 封面 <em>可选</em></strong><small>仍可作为图片查看，也可随时还原 ZIP</small></span><input id="use-cover" type="checkbox" class="switch"></label>
+   <div id="cover-settings" hidden><div class="input-row cover-row"><div class="input-shell"><input id="cover" placeholder="选择任意 JPG / JPEG 图片" spellcheck="false"></div><button id="choose-cover" class="button secondary">选择图片</button></div><p class="field-hint">如需加密，请开启下方密码保护。请勿重新压缩、编辑或转码生成的 JPG。</p></div>
+   <div class="divider"></div>
+   <label class="option"><span class="option-icon">⌑</span><span class="option-copy"><strong>设置压缩密码 <em>可选</em></strong><small>AES-256 加密文件内容，适用于 ZIP 和 JPG 包</small></span><input id="use-password" type="checkbox" class="switch"></label>
+   <div id="password-settings" hidden>
+    <label for="password" class="spaced-label">压缩密码</label>
+    <div class="input-row password-row"><div class="input-shell"><input id="password" type="password" maxlength="256" autocomplete="new-password" spellcheck="false" placeholder="手动输入或随机生成密码"><button id="password-toggle" class="password-toggle" type="button" aria-controls="password" aria-pressed="false" aria-label="显示压缩密码">显示</button></div><button id="password-generate" type="button" class="button secondary">随机生成</button></div>
+    <p class="field-hint">随机生成 20 位密码，也可直接编辑。密码默认隐藏，点击「显示」查看并保存。</p>
+    <p class="field-hint">文件名仍可见。请妥善保管密码；还原可使用本软件或支持 AES ZIP 的解压工具，系统内置解压可能不支持。</p>
+   </div>
+  </section>
+ </fieldset>
+ </div></div>
+ <aside class="summary-column"><div class="hero-art" aria-hidden="true"><div class="art-back"></div><div class="art-front"><span>ZIP</span><i>↓</i><small>READY TO GO</small></div><div class="art-spark">✦</div></div><section class="summary-card"><div class="summary-top"><span class="summary-symbol">↗</span><span class="tiny-tag">PACKAGE OVERVIEW</span></div><h2>准备好，出发。</h2><p class="summary-subtitle">你的下一份项目包，即将就绪。</p><div class="summary-line"><span>输出格式</span><strong id="summary-format">ZIP 压缩包</strong></div><div class="summary-line"><span>编译文件</span><strong id="summary-class">自动过滤</strong></div><div class="summary-line"><span>大小限制</span><strong id="summary-size">不限</strong></div><div class="summary-line"><span>处理位置</span><strong><i class="green-dot"></i> 仅本机</strong></div><div class="summary-divider"></div><div class="output-caption">即将保存为</div><div id="summary-output" class="summary-output">project.zip</div><button id="start" class="button primary full">开始打包 <span>↗</span></button><button id="preview" class="button outline full">预览文件清单</button><p class="summary-footnote">支持中文路径 · 保留空目录</p></section>
+ <section class="tip-card"><span>✧</span><div><strong>分享，可以更轻松</strong><p>打包前先预览，检查文件数量和体积。JPG 包可以通过左侧入口还原。</p></div></section></aside>
+ </section>
+ <section id="restore-page" class="page-layout" aria-label="JPG / ZIP 还原" hidden>
+  <div class="page-main-column"><section class="hero"><div><div class="eyebrow">RESTORE. READY TO WORK.</div><h1>让项目，<span>回到手边。</span></h1><p>从 JPG 或 ZIP 直接解压，一步找回完整项目。</p></div></section>
+  <div class="form-column"><fieldset id="restore-controls">
+    <section class="card"><div class="card-heading"><span class="step">01</span><div><h2>选择待还原文件</h2><p>支持 JPG 图片包、普通 ZIP 和 AES 加密 ZIP。</p></div><span class="tiny-tag">ARCHIVE</span></div>
+     <label for="restore-source">JPG / ZIP 文件</label><div class="input-row"><div class="input-shell"><span>▱</span><input id="restore-source" placeholder="输入文件路径，或点击选择文件" spellcheck="false"></div><button id="choose-restore-source" class="button secondary">选择文件</button></div>
+     <p class="field-hint">兼容之前生成的 EasyPackage JPG 包，原始文件会保留。</p>
+    </section>
+    <section class="card"><div class="card-heading"><span class="step">02</span><div><h2>设置还原位置</h2><p>解压到一个新文件夹，保留已有内容。</p></div><span class="tiny-tag">DESTINATION</span></div>
+     <label for="restore-directory">保存目录</label><div class="input-row"><div class="input-shell"><span>▱</span><input id="restore-directory" placeholder="选择项目还原位置" spellcheck="false"></div><button id="choose-restore-directory" class="button secondary">选择目录</button></div>
+     <label for="restore-filename" class="spaced-label">新文件夹名称</label><div class="input-shell"><input id="restore-filename" value="restored" placeholder="输入还原后的文件夹名称" spellcheck="false"></div>
+     <p class="field-hint">文件夹名称如已存在，请更换名称；不会合并或覆盖已有文件夹。</p>
+    </section>
+    <section class="card"><div class="card-heading"><span class="step">03</span><div><h2>解压密码 <em class="optional-tag">可选</em></h2><p>未加密的文件，留空即可。</p></div><span class="tiny-tag">PASSWORD</span></div>
+     <label for="restore-password">解压密码</label><div class="input-shell"><input id="restore-password" type="password" maxlength="256" autocomplete="off" spellcheck="false" placeholder="输入打包时设置的密码"><button id="restore-password-toggle" class="password-toggle" type="button" aria-controls="restore-password" aria-pressed="false" aria-label="显示解压密码">显示</button></div>
+    </section>
+   </fieldset></div></div>
+   <aside class="summary-column"><div class="hero-art" aria-hidden="true"><div class="art-back"></div><div class="art-front"><span>ZIP</span><i>↺</i><small>BACK TO WORK</small></div><div class="art-spark">✦</div></div><section class="summary-card"><div class="summary-top"><span class="summary-symbol">↺</span><span class="tiny-tag">RESTORE OVERVIEW</span></div><h2>找回完整项目。</h2><p class="summary-subtitle">校验、解密、解压，一次完成。</p><div class="summary-line"><span>还原方式</span><strong>直接解压</strong></div><div class="summary-line"><span>输出内容</span><strong>完整项目文件夹</strong></div><div class="summary-line"><span>已有文件</span><strong>保留，不覆盖</strong></div><div class="summary-divider"></div><div class="output-caption">待还原文件</div><div id="restore-summary-file" class="summary-output">尚未选择文件</div><div class="output-caption">还原到</div><div id="restore-summary-target" class="summary-output">请选择保存目录</div><button id="restore-start" class="button primary full">解压项目 <span>↗</span></button><p class="summary-footnote">本地处理 · 不生成中间 ZIP</p></section>
+    <section class="tip-card"><span>✧</span><div><strong>原样找回，继续创作</strong><p>解压前自动校验内容。密码不正确或文件损坏时，会清理临时文件。</p></div></section>
+   </aside>
+ </section>
+ <footer id="page-footer"><span>EasyPackage · 简单打包，自由分享。</span><button id="quit-footer">退出程序</button><span>Windows / macOS / Linux</span></footer>
+ </div>
+ <section id="status-card" class="status-card" aria-live="polite"><div class="status-mark" id="status-mark">✓</div><div class="status-main"><div class="status-heading"><strong id="status-title">准备就绪</strong><span id="percent">等待任务</span></div><div class="progress-track"><div id="progress"></div></div><p id="status-detail">选择一个项目，开始你的第一次打包。</p></div><button id="cancel" class="button secondary" hidden>取消任务</button><button id="show-output" class="button secondary" hidden>查看保存位置</button></section>
+</main>
+<dialog id="browser-dialog"><div class="dialog-head"><div><div class="eyebrow">LOCAL FILES</div><h2 id="browser-title">选择文件夹</h2></div><button class="icon-button" id="browser-close" aria-label="关闭文件浏览器">×</button></div><div class="browser-tools"><button id="browser-up" class="button secondary" title="上一级">↑</button><input id="browser-path" aria-label="当前文件夹路径" spellcheck="false"><button id="browser-go" class="button secondary">前往</button></div><div class="browser-shortcuts" id="browser-shortcuts"></div><input id="browser-search" class="browser-search" placeholder="搜索当前目录" aria-label="搜索当前目录"><div class="file-list" id="file-list"></div><p id="browser-message" class="field-hint" role="status"></p><div class="dialog-actions"><span id="browser-selection"></span><button id="browser-select" class="button primary">选择此文件夹</button></div></dialog>
+<dialog id="preview-dialog"><div class="dialog-head"><div><div class="eyebrow">PACKAGE CONTENTS</div><h2>文件预览</h2></div><button id="preview-close" class="icon-button" aria-label="关闭预览">×</button></div><div id="preview-stats" class="preview-stats"></div><div id="preview-list" class="preview-list"></div><p class="field-hint">最多展示 2,000 项；正式打包会重新扫描全部符合条件的文件。</p></dialog>
+<div class="toast" id="toast" role="alert" hidden></div>
+</body></html>
