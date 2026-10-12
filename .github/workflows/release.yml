@@ -19,8 +19,10 @@ jobs:
           - platform: windows-amd64
             runner: windows-2025
           - platform: macos-arm64
+            build_platform: darwin-arm64
             runner: macos-15
           - platform: linux-amd64
+            build_platform: linux-amd64
             runner: ubuntu-24.04
     env:
       RELEASE_TAG: ${{ github.ref_name }}
@@ -70,10 +72,11 @@ jobs:
         shell: bash
         env:
           RELEASE_PLATFORM: ${{ matrix.platform }}
+          BUILD_PLATFORM: ${{ matrix.build_platform }}
         run: |
           set -euo pipefail
           mkdir -p dist/packages "$RUNNER_TEMP/EasyPackage"
-          cp "$EASYPACKAGE_DIST/$RELEASE_PLATFORM/EasyPackage" "$RUNNER_TEMP/EasyPackage/EasyPackage"
+          cp "$EASYPACKAGE_DIST/$BUILD_PLATFORM/EasyPackage" "$RUNNER_TEMP/EasyPackage/EasyPackage"
           cp README.md "$RUNNER_TEMP/EasyPackage/README.md"
           tar -C "$RUNNER_TEMP" -czf "dist/packages/EasyPackage-$RELEASE_TAG-$RELEASE_PLATFORM.tar.gz" EasyPackage
 
