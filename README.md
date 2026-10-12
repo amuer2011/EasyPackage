@@ -90,7 +90,7 @@ Windows amd64 在 Windows 上完成了构建和 Go 测试。完整界面点击�
 
 ## 自动发布
 
-推送 `v*` 标签后，GitHub Actions 会分别在 Windows amd64、macOS arm64、Linux amd64 上构建，生成 `EasyPackage-<标签>-<系统>-<架构>.<格式>` 命名的 ZIP 或 tar.gz 文件，并附加到同名 GitHub Release。发布需要仓库允许 Actions 使用写入权限创建 Release；工作流已单独声明 `contents: write`。
+推送 `v*` 标签后，GitHub Actions 会分别在 Windows amd64、macOS arm64、macOS amd64、Linux amd64 上构建，生成 `EasyPackage-<标签>-<系统>-<架构>.<格式>` 命名的 ZIP 或 tar.gz 文件，并附加到同名 GitHub Release。发布需要仓库允许 Actions 使用写入权限创建 Release；工作流已单独声明 `contents: write`。
 
 ## 结构
 
