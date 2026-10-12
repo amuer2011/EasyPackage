@@ -90,7 +90,9 @@ Windows amd64 在 Windows 上完成了构建和 Go 测试。完整界面点击�
 
 ## 自动发布
 
-推送 `v*` 标签后，GitHub Actions 会分别在 Windows amd64、macOS arm64、macOS amd64、Linux amd64 上构建，生成 `EasyPackage-<标签>-<系统>-<架构>.<格式>` 命名的 ZIP 或 tar.gz 文件，并附加到同名 GitHub Release。发布需要仓库允许 Actions 使用写入权限创建 Release；工作流已单独声明 `contents: write`。
+推送 `v*` 标签后，GitHub Actions 会分别在 Windows amd64、macOS arm64、macOS amd64、Linux amd64 上构建，并将对应系统的文件附加到同名 GitHub Release：Windows 提供独立 `.exe`，macOS 提供包含 `.app` 的 `.dmg`，Linux 提供 `.AppImage`。文件名采用 `EasyPackage-<标签>-<系统>-<架构>.<格式>`。发布需要仓库允许 Actions 使用写入权限创建 Release；工作流已单独声明 `contents: write`。
+
+下载 macOS `.dmg` 后打开磁盘映像，将 EasyPackage 拖到“应用程序”文件夹。应用使用临时签名，尚未经过 Apple 公证，首次打开可能需要在系统设置中确认。Linux `.AppImage` 需要赋予执行权限；目标系统仍需 GTK 3 运行库，部分发行版还需要 FUSE 2，也可使用 AppImage 的 `--appimage-extract-and-run` 选项。Windows `.exe` 需要系统已安装 WebView2 Runtime。
 
 ## 结构
 

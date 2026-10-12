@@ -26,7 +26,7 @@ jobs:
             runner: macos-15-intel
           - platform: linux-amd64
             build_platform: linux-amd64
-            runner: ubuntu-24.04
+            runner: ubuntu-22.04
     env:
       RELEASE_TAG: ${{ github.ref_name }}
       EASYPACKAGE_DIST: dist/${{ github.ref_name }}
@@ -57,31 +57,29 @@ jobs:
         shell: bash
         run: sh scripts/build.sh --native
 
-      - name: Package Windows zip
+      - name: Prepare Windows executable
         if: matrix.platform == 'windows-amd64'
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          $stage = Join-Path $env:RUNNER_TEMP 'EasyPackage'
           $packageDir = 'dist/packages'
-          New-Item -ItemType Directory -Force -Path $stage, $packageDir | Out-Null
-          Copy-Item -LiteralPath "$env:EASYPACKAGE_DIST/windows-amd64/EasyPackage.exe" -Destination $stage
-          Copy-Item -LiteralPath 'README.md' -Destination $stage
-          $archive = "EasyPackage-$env:RELEASE_TAG-windows-amd64.zip"
-          Compress-Archive -Path (Join-Path $stage '*') -DestinationPath (Join-Path $packageDir $archive) -CompressionLevel Optimal
+          New-Item -ItemType Directory -Force -Path $packageDir | Out-Null
+          Copy-Item -LiteralPath "$env:EASYPACKAGE_DIST/windows-amd64/EasyPackage.exe" -Destination "$packageDir/EasyPackage-$env:RELEASE_TAG-windows-amd64.exe"
 
-      - name: Package macOS or Linux tarball
-        if: matrix.platform != 'windows-amd64'
+      - name: Create macOS disk image
+        if: startsWith(matrix.platform, 'macos-')
         shell: bash
         env:
           RELEASE_PLATFORM: ${{ matrix.platform }}
           BUILD_PLATFORM: ${{ matrix.build_platform }}
         run: |
           set -euo pipefail
-          mkdir -p dist/packages "$RUNNER_TEMP/EasyPackage"
-          cp "$EASYPACKAGE_DIST/$BUILD_PLATFORM/EasyPackage" "$RUNNER_TEMP/EasyPackage/EasyPackage"
-          cp README.md "$RUNNER_TEMP/EasyPackage/README.md"
-          tar -C "$RUNNER_TEMP" -czf "dist/packages/EasyPackage-$RELEASE_TAG-$RELEASE_PLATFORM.tar.gz" EasyPackage
+          sh scripts/package-macos.sh "$EASYPACKAGE_DIST/$BUILD_PLATFORM/EasyPackage" "$RELEASE_TAG" "$RELEASE_PLATFORM" dist/packages
+
+      - name: Create Linux AppImage
+        if: matrix.platform == 'linux-amd64'
+        shell: bash
+        run: sh scripts/package-linux-appimage.sh "$EASYPACKAGE_DIST/linux-amd64/EasyPackage" "$RELEASE_TAG" dist/packages
 
       - name: Upload release asset
         uses: actions/upload-artifact@v4
